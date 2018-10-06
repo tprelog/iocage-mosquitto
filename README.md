@@ -8,7 +8,7 @@ Artifact file(s) for [Eclipse Mosquitto](https://mosquitto.org/)
 
 **Download plugin and install**
 
-    wget -O /tmp/mosquitto.json http://gitlab.local/troy/iocage-mosquitto/raw/master/mosquitto.json
+    wget -O /tmp/mosquitto.json https://raw.githubusercontent.com/tprelog/iocage-mosquitto/master/mosquitto.json
     sudo iocage fetch -P dhcp=on vnet=on bpf=yes -n /tmp/mosquitto.json --branch 'master'
 
 ---
@@ -34,7 +34,7 @@ Artifact file(s) for [Eclipse Mosquitto](https://mosquitto.org/)
  
 **Download pkg-list and create a jail using it to install requirements**
 
-    wget -O /tmp/pkglist.json http://gitlab.local/troy/iocage-mosquitto/raw/master/pkg-list.json
+    wget -O /tmp/pkglist.json https://raw.githubusercontent.com/tprelog/iocage-mosquitto/master/pkg-list.json
     sudo iocage create -r 11.2-RELEASE boot=on dhcp=on bpf=yes vnet=on -p /tmp/pkglist.json -n mosquitto
 
 **Enable and start the service**
