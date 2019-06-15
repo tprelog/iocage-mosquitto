@@ -19,7 +19,7 @@ Artifact file(s) for [Eclipse Mosquitto](https://mosquitto.org/)
 
 ###### Restart `mosquitto`
 
-    sudo iocage exec service mosquitto restart
+    sudo iocage exec mosquitto service mosquitto restart
 
 ###### Testing subscribe or publish from FreeNAS console
 
