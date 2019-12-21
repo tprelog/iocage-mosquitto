@@ -1,4 +1,9 @@
--- Mosquitto MQTT plugin for FreeNAS --
+
+  __  __  ___  ___  ___  _   _ ___ _____ _____ ___  
+ |  \/  |/ _ \/ __|/ _ \| | | |_ _|_   _|_   _/ _ \ 
+ | |\/| | (_) \__ \ (_) | |_| || |  | |   | || (_) |
+ |_|  |_|\___/|___/\__\_\\___/|___| |_|   |_| \___/ 
+                                                    
 
 - edit mosquitto config file:
     ee /usr/local/etc/mosquitto/mosquitto.conf

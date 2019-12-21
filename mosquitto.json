@@ -1,11 +1,16 @@
 {
   "name": "mosquitto",
-  "release": "11.2-RELEASE",
+  "release": "11.3-RELEASE",
   "artifact": "https://github.com/tprelog/iocage-mosquitto.git",
+  "official": "false",
+  "properties": {
+    "allow_raw_sockets": "1",
+    "dhcp": "1"
+  },
   "pkgs": [
     "net/mosquitto"
   ],
-  "packagesite": "http://pkg.FreeBSD.org/${ABI}/quarterly",
+  "packagesite": "http://pkg.FreeBSD.org/${ABI}/latest",
   "fingerprints": {
     "plugin-default": [
       {
@@ -14,5 +19,5 @@
       }
     ]
   },
-  "official": false
+  "revision": "0"
 }
