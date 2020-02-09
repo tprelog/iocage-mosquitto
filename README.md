@@ -1,40 +1,46 @@
 # iocage-mosquitto
-Artifact file(s) for [Eclipse Mosquitto](https://mosquitto.org/)
+Artifact file(s) for [Eclipse Mosquitto][1]
 
-#### Mosquitto plugin for FreeNAS 11
+### This is a [FreeNAS Community Plugin][2]
 
- - This branch is for FreeNAS 11.2
+**The current release is intended for FreeNAS 11.3 but should work with FreeNAS 11.2-U7 or later**
 
-**Download plugin and install**
+- This will create an 11.3-RELEASE iocage-jail for [Mosquitto][1]
 
-    wget -O /tmp/mosquitto.json https://raw.githubusercontent.com/tprelog/iocage-mosquitto/11.2-RELEASE/mosquitto.json
-    sudo iocage fetch -P dhcp=on vnet=on bpf=yes -n /tmp/mosquitto.json --branch '11.2-RELEASE'
+#### Installation
+
+**Mosquitto is available from the Communtity Plugins page on FreeNAS 11.3**
+
+![img][FreeNAS_plugins]
 
 ---
-###### Edit `mosquitto` config file from FreeNAS console
 
-    sudo iocage exec mosquitto ee /usr/local/etc/mosquitto/mosquitto.conf
+**FreeNAS 11.2-U7**
+<details><summary>Click Here</summary>
+<p>
 
-###### Restart `mosquitto`
+##### plugin-jail
 
-    sudo iocage exec mosquitto service mosquitto restart
+*The 11.3-RELEASE should work on FreeNAS 11.2-U7 or later*
 
-###### Testing subscribe or publish from FreeNAS console
+It is possible to install this plugin on FreeNAS 11.2-U7 using the console.
 
-    sudo iocage exec mosquitto mosquitto_sub -d -t /dev/test
-    sudo iocage exec mosquitto mosquitto_pub -d -t /dev/test -m "Hello World"
+```bash
+wget -O /tmp/mosquitto.json https://raw.githubusercontent.com/tprelog/freenas-plugin-index/11.3-RELEASE/mosquitto.json
+iocage fetch -P dhcp=on vnet=on vnet_default_interface=auto bpf=yes boot=on -n /tmp/mosquitto.json --branch 11.3-RELEASE
+```
 
-###### To see a list of jails as well as their ip address
-
-    sudo iocage list -l
-    +-----+-------------+------+-------+----------+-----------------+---------------------+-----+----------+
-    | JID |    NAME     | BOOT | STATE |   TYPE   |     RELEASE     |         IP4         | IP6 | TEMPLATE |
-    +=====+=============+======+=======+==========+=================+=====================+=====+==========+
-    | 1   | mosquitto   | on   | up    | pluginv2 | 11.2-RELEASE-p4 | epair0b|192.0.1.86  | -   | -        |
-    +-----+-------------+------+-------+----------+-----------------+---------------------+-----+----------+
-    | 2   | mosquitto_2 | on   | up    | jail     | 11.2-RELEASE-p4 | epair0b|192.0.1.79  | -   | -        |
-    +-----+-------------+------+-------+----------+-----------------+---------------------+-----+----------+
+</p>
+</details>
 
 
-- Tested on FreeNAS-11.2-BETA3
-- More information about [iocage plugins](https://doc.freenas.org/11.2/plugins.html) and [iocage jails](https://doc.freenas.org/11.2/jails.html) can be found in the [FreeNAS guide](https://doc.freenas.org/11.2/intro.html#introduction)
+---
+
+###### Current artifact files can be found in the [11.3-RELEASE branch][4]
+
+[FreeNAS_plugins]: _img/FreeNAS_mosquitto.png
+
+[1]: https://mosquitto.org/
+[2]: https://www.freenas.org/plugins/
+[3]: https://github.com/tprelog/freenas-plugin-index
+[4]: https://github.com/tprelog/iocage-mosquitto/tree/11.3-RELEASE
