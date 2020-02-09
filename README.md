@@ -1,5 +1,5 @@
 # iocage-mosquitto
-Artifact file(s) for [Eclipse Mosquitto][1]
+Artifact file(s) for [Eclipse Mosquitto][1] (MQTT Broker)
 
 ### This is a [FreeNAS Community Plugin][2]
 
