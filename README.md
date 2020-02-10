@@ -9,7 +9,7 @@ Artifact file(s) for [Eclipse Mosquitto][1] (MQTT Broker)
 
 #### Installation
 
-**Mosquitto is available from the Communtity Plugins page on FreeNAS 11.3**
+**Mosquitto is available from the Community Plugins page on FreeNAS 11.3**
 
 ![img][FreeNAS_plugins]
 
