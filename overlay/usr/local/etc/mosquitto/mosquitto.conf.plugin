@@ -1,0 +1,34 @@
+# This mosquitto.conf file is provided with the FreeNAS Community Plugin for Mosquitto.
+#
+# See mosquitto.conf(5) for more information:
+# https://mosquitto.org/man/mosquitto-conf-5.html
+
+# Write process id to a file.
+pid_file /var/run/mosquitto.pid
+
+# When run as root, drop privileges to this user and its primary group.
+# Set to root to stay as root, but this is not recommended.
+user mosquitto
+
+# Port to use for the default listener.
+port 1883
+
+# At least one of cafile or capath must be defined.
+cafile /usr/local/share/certs/ca-root-nss.crt
+
+# Save persistent message data to disk (true/false).
+# This saves information about all messages, including subscriptions, 
+# currently in-flight messages and retained messages.
+persistence true
+
+# The filename to use for the persistent database, not including the path.
+persistence_file mosquitto.db
+
+# Location for persistent database. Must include trailing /
+persistence_location /var/db/mosquitto/
+
+# Control access to the broker using a password file.
+# This file should be generated using the mosquitto_passwd utility.
+# -- mosquitto_passwd -c /usr/local/etc/mosquitto/pwfile USER_NAME
+# See also: https://mosquitto.org/man/mosquitto_passwd-1.html
+#password_file /usr/local/etc/mosquitto/pwfile

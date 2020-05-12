@@ -1,0 +1,13 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Mosquitto - FreeNAS Community Plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- edit mosquitto config file:
+    ee /usr/local/etc/mosquitto/mosquitto.conf
+
+- control mosquitto service:
+    service mosquitto [reload|restart|start|status|stop]
+
+- testing subscribe or publish:
+    mosquitto_sub -d -t /dev/test
+    mosquitto_pub -d -t /dev/test -m "Hello World"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
