@@ -2,7 +2,7 @@
           Mosquitto - FreeNAS Community Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - edit mosquitto config file:
-    ee /usr/local/etc/mosquitto/mosquitto.conf
+    ee /usr/local/etc/mosquitto/conf/mosquitto.conf
 
 - control mosquitto service:
     service mosquitto [reload|restart|start|status|stop]
