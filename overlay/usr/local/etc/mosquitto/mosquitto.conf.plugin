@@ -27,6 +27,12 @@ persistence_file mosquitto.db
 # Location for persistent database. Must include trailing /
 persistence_location /var/db/mosquitto/
 
-# Include per-installation configuration files
-include_dir /usr/local/etc/mosquitto/conf
+# Control access to the broker using a password file.
+# This file should be generated using the mosquitto_passwd utility.
+# -- mosquitto_passwd -c /usr/local/etc/mosquitto/pwfile USER_NAME
+# See also: https://mosquitto.org/man/mosquitto_passwd-1.html
+password_file /usr/local/etc/mosquitto/pwfile
 
+# allow_anonymous [ true | false ] determines whether clients that connect
+# without providing a username are allowed to connect
+allow_anonymous true
