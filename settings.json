@@ -1,0 +1,45 @@
+{
+	"servicerestart":"service mosquitto restart",
+	"serviceget": "/usr/local/bin/mosquittoget",
+	"serviceset": "/usr/local/bin/mosquittoset",
+	"options":
+	{
+		"port": {
+			"type": "int",
+			"name": "MQTT Port",
+			"description": "Port for MQTT connections",
+			"range": "1024-32000",
+			"default": "1883",
+			"requirerestart": true
+		},
+		"allow_anonymous": {
+			"type": "bool",
+			"name": "Allow anonymous setting",
+			"description": "Allow anonymous MQTT connections",
+			"default": true,
+			"requirerestart": true
+		},
+		"adduser": {
+			"type": "add",
+			"name": "Add User",
+			"description": "Add new MQTT user",
+			  "requiredargs": {
+				  "username": {
+						"type": "string",
+						"description": "MQTT Client Username"
+					},
+					"password": {
+						"type": "password",
+						"description": "MQTT Client Password"
+					}
+			  },
+			"requirerestart": true
+		},
+		"deluser": {
+			"type": "delete",
+			"name": "Delete User",
+			"description": "Remove a MQTT user",
+			"requirerestart": true
+		}
+	}
+}
