@@ -31,4 +31,8 @@ persistence_location /var/db/mosquitto/
 # This file should be generated using the mosquitto_passwd utility.
 # -- mosquitto_passwd -c /usr/local/etc/mosquitto/pwfile USER_NAME
 # See also: https://mosquitto.org/man/mosquitto_passwd-1.html
-#password_file /usr/local/etc/mosquitto/pwfile
+password_file /usr/local/etc/mosquitto/pwfile
+
+# allow_anonymous [ true | false ] determines whether clients that connect
+# without providing a username are allowed to connect
+allow_anonymous true
