@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Set configuration option in _CONFIG
+# Example use: sudo iocage set -P allow_anonymous=false mosquitto
+# Example use: sudo iocage set -P adduser=username,password mosquitto
+# Example use: sudo iocage set -P deluser=username mosquitto
+
+_CONFIG="/usr/local/etc/mosquitto/mosquitto.conf"
+_PWFILE="/usr/local/etc/mosquitto/pwfile"
+
+give_message_config()
+{
+if [ $? -eq 0 ] ; then
+    echo "Changing ${_CONFIG}"
+else
+    echo "Error updating ${_CONFIG}">2 ; exit 1
+fi
+}
+
+give_message_pwfile()
+{
+if [ $? -eq 0 ] ; then
+    echo "Changing ${_PWFILE}"
+else
+    echo "Error updating ${_PWFILE}">2 ; exit 1
+fi
+}
+
+case $1 in
+    port) sed -i '' "s/^port.*/port $2/" ${_CONFIG}
+          give_message_config
+          ;;
+    allow_anonymous) sed -i '' "s/^allow_anonymous.*/allow_anonymous $2/" ${_CONFIG}
+          give_message_config
+          ;;
+    adduser) mosquitto_passwd -b ${_PWFILE} $2 $3
+          give_message_pwfile
+          ;;
+    deluser) mosquitto_passwd -D ${_PWFILE} $2
+          give_message_pwfile
+          ;;
+    *) echo "Unknown option">&2 ; exit 1
+          ;;
+esac

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Get configuration setting from mosquitto configuration file
+
+_CONFIG="/usr/local/etc/mosquitto/mosquitto.conf"
+
+case $1 in
+    port) grep port "${_CONFIG}"
+          ;;
+    allow_anonymous) grep allow_anonymous "${_CONFIG}"
+          ;;
+    *) echo "Unknown option">&2
+       exit 1
+       ;;
+esac
