@@ -15,6 +15,9 @@ port 1883
 
 # At least one of cafile or capath must be defined.
 cafile /usr/local/share/certs/ca-root-nss.crt
+#cafile /usr/local/etc/mosquitto/ca.crt
+#keyfile /usr/local/etc/mosquitto/server.key
+#certfile /usr/local/etc/mosquitto/server.crt
 
 # Save persistent message data to disk (true/false).
 # This saves information about all messages, including subscriptions, 
