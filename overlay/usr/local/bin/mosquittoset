@@ -33,7 +33,7 @@ set_tls_comments()
 {
 sed -i '' "s|cafile /usr/local/share/certs/ca-root-nss.crt|#cafile /usr/local/share/certs/ca-root-nss.crt|" $1
 sed -i '' "s|#cafile /usr/local/etc/mosquitto/ca.crt|cafile /usr/local/etc/mosquitto/ca.crt|" $1
-sed -i '' "s|#keyfile /usr/local/etc/mosquitto/server.crt|keyfile /usr/local/etc/mosquitto/server.key|" $1
+sed -i '' "s|#keyfile /usr/local/etc/mosquitto/server.key|keyfile /usr/local/etc/mosquitto/server.key|" $1
 sed -i '' "s|#certfile /usr/local/etc/mosquitto/server.crt|certfile /usr/local/etc/mosquitto/server.crt|" $1
 }
 
@@ -41,7 +41,7 @@ unset_tls_comments()
 {
 sed -i '' "s|#cafile /usr/local/share/certs/ca-root-nss.crt|cafile /usr/local/share/certs/ca-root-nss.crt|" $1
 sed -i '' "s|cafile /usr/local/etc/mosquitto/ca.crt|#cafile /usr/local/etc/mosquitto/ca.crt|" $1
-sed -i '' "s|keyfile /usr/local/etc/mosquitto/server.crt|#keyfile /usr/local/etc/mosquitto/server.key|" $1
+sed -i '' "s|keyfile /usr/local/etc/mosquitto/server.key|#keyfile /usr/local/etc/mosquitto/server.key|" $1
 sed -i '' "s|certfile /usr/local/etc/mosquitto/server.crt|#certfile /usr/local/etc/mosquitto/server.crt|" $1
 }
 
@@ -61,10 +61,12 @@ case $1 in
     addtls) mosquitto-generate-tlscert $2
           set_tls_comments ${_CONFIG}
           give_message_config
+          echo "consider chaning port to 8883, the default tls port for mqtt"
           ;;
     deltls) unset_tls_comments ${_CONFIG}
           rm -f /usr/local/etc/mosquitto/{ca.crt,ca.key,ca.srl,client.crt,client.csr,client.key,server.crt,server.csr,server.key}
           give_message_config
+          echo "consider chaning port to 1883, the default port for mqtt"
           ;;
     *) echo "Unknown option">&2 ; exit 1
           ;;
