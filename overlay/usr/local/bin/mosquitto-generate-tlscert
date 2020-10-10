@@ -12,7 +12,7 @@ O="ca.example.com"
 OU="mosquitto-ca"
 emailAddress="mosquitto@example.com"
 
-TLS_DIR="/home/sam/Documents/iocage-mosquitto/overlay/usr/local/etc/mosquitto"
+TLS_DIR="/usr/local/etc/mosquitto"
 mkdir -p $TLS_DIR
 
 # create a CA private key
