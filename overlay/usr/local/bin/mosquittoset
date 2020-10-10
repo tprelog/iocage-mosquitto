@@ -4,6 +4,9 @@
 # Example use: sudo iocage set -P allow_anonymous=false mosquitto
 # Example use: sudo iocage set -P adduser=username,password mosquitto
 # Example use: sudo iocage set -P deluser=username mosquitto
+# Example use: sudo iocage set -P addtls=mqtt.example.com mosquitto
+# Example use: sudo iocage set -P deltls=true mosquitto
+
 
 _CONFIG="/usr/local/etc/mosquitto/mosquitto.conf"
 _PWFILE="/usr/local/etc/mosquitto/pwfile"
@@ -26,6 +29,22 @@ else
 fi
 }
 
+set_tls_comments()
+{
+sed -i '' "s|cafile /usr/local/share/certs/ca-root-nss.crt|#cafile /usr/local/share/certs/ca-root-nss.crt|" $1
+sed -i '' "s|#cafile /usr/local/etc/mosquitto/ca.crt|cafile /usr/local/etc/mosquitto/ca.crt|" $1
+sed -i '' "s|#keyfile /usr/local/etc/mosquitto/server.crt|keyfile /usr/local/etc/mosquitto/server.key|" $1
+sed -i '' "s|#certfile /usr/local/etc/mosquitto/server.crt|certfile /usr/local/etc/mosquitto/server.crt|" $1
+}
+
+unset_tls_comments()
+{
+sed -i '' "s|#cafile /usr/local/share/certs/ca-root-nss.crt|cafile /usr/local/share/certs/ca-root-nss.crt|" $1
+sed -i '' "s|cafile /usr/local/etc/mosquitto/ca.crt|#cafile /usr/local/etc/mosquitto/ca.crt|" $1
+sed -i '' "s|keyfile /usr/local/etc/mosquitto/server.crt|#keyfile /usr/local/etc/mosquitto/server.key|" $1
+sed -i '' "s|certfile /usr/local/etc/mosquitto/server.crt|#certfile /usr/local/etc/mosquitto/server.crt|" $1
+}
+
 case $1 in
     port) sed -i '' "s/^port.*/port $2/" ${_CONFIG}
           give_message_config
@@ -38,6 +57,14 @@ case $1 in
           ;;
     deluser) mosquitto_passwd -D ${_PWFILE} $2
           give_message_pwfile
+          ;;
+    addtls) mosquitto-generate-tlscert $2
+          set_tls_comments ${_CONFIG}
+          give_message_config
+          ;;
+    deltls) unset_tls_comments ${_CONFIG}
+          rm -f /usr/local/etc/mosquitto/{ca.crt,ca.key,ca.srl,client.crt,client.csr,client.key,server.crt,server.csr,server.key}
+          give_message_config
           ;;
     *) echo "Unknown option">&2 ; exit 1
           ;;
