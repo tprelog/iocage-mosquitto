@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # CN must be the name specified by -h in mosquitto_pub/sub, e.g.
-# mosquitto_pub -h 192.168.1.0 -p 8883 --cafile ca.crt -t \$SYS/broker/bytes/\#
-# mosquitto_pub -h mqtt.example.com -p 8883 --cafile ca.crt -t \$SYS/broker/bytes/\#
+# mosquitto_sub -h 192.168.1.0 -p 8883 --cafile ca.crt -t \$SYS/broker/bytes/\#
+# mosquitto_sub -h mqtt.example.com -p 8883 --cafile ca.crt -t \$SYS/broker/bytes/\#
 CN=$1
 
 C="MQ"
