@@ -61,8 +61,6 @@ case $1 in
     addtls) mosquitto-generate-tlscert $2
           set_tls_comments ${_CONFIG}
           give_message_config
-          sleep 5
-          echo "consider chaning port to 8883, the default tls port for mqtt"
           ;;
     deltls) unset_tls_comments ${_CONFIG}
           rm -f /usr/local/etc/mosquitto/ca.crt
@@ -75,8 +73,6 @@ case $1 in
           rm -f /usr/local/etc/mosquitto/server.csr
           rm -f /usr/local/etc/mosquitto/server.key
           give_message_config
-          sleep 5
-          echo "consider chaning port to 1883, the default port for mqtt"
           ;;
     *) echo "Unknown option">&2 ; exit 1
           ;;
