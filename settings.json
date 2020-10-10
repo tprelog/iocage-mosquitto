@@ -40,6 +40,24 @@
 			"name": "Delete User",
 			"description": "Remove a MQTT user",
 			"requirerestart": true
+		},
+		"addtls":{
+			"type": "add",
+			"name": "Add tls listening",
+			"description": "Generate certs and keys for a self signed encrypted tls listening",
+			"requiredargs": {
+				"hostname": {
+					"type": "string",
+					"description": "hostname specified by -h flag on mosquitto_pub/sub"
+				}
+			},
+			"requirerestart": true
+		},
+		"deltls":{
+			"type": "delete",
+			"name": "Remove tls listening",
+			"description": "Delete certs and keys for a self signed encrypted tls listening",
+			"requirerestart": true
 		}
 	}
 }

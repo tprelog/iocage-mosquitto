@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# CN must be the name specified by -h in mosquitto_pub/sub, e.g.
+# mosquitto_sub -h 192.168.1.0 -p 8883 --cafile ca.crt -t \$SYS/broker/bytes/\#
+# mosquitto_sub -h mqtt.example.com -p 8883 --cafile ca.crt -t \$SYS/broker/bytes/\#
+CN=$1
+
+C="MQ"
+ST="TT"
+L="mosquitto"
+O="ca.example.com"
+OU="mosquitto-ca"
+emailAddress="mosquitto@example.com"
+
+TLS_DIR="/usr/local/etc/mosquitto"
+mkdir -p $TLS_DIR
+
+# create a CA private key
+openssl genrsa -out "${TLS_DIR}/ca.key" 2048
+# create a CA public key / certificate
+openssl req -new -x509 -days 1826 -key "${TLS_DIR}/ca.key" -out "${TLS_DIR}/ca.crt" -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
+
+# Apparently subj must vary by atleast 1 character
+OU="mosquitto-server"
+
+# create a server private key
+openssl genrsa -out "${TLS_DIR}/server.key" 2048
+# create a server certificate request
+openssl req -new -out "${TLS_DIR}/server.csr" -key "${TLS_DIR}/server.key" -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
+# create a server public key / certificate
+openssl x509 -req -in "${TLS_DIR}/server.csr" -CA "${TLS_DIR}/ca.crt" -CAkey "${TLS_DIR}/ca.key" -CAcreateserial -out "${TLS_DIR}/server.crt" -days 360
+
+# Apparently subj must vary by atleast 1 character
+OU="mosquitto-client"
+
+# creata a client private key
+openssl genrsa -out "${TLS_DIR}/client.key" 2048
+# create a client certificate request
+openssl req -new -key "${TLS_DIR}/client.key" -out "${TLS_DIR}/client.csr" -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
+# create a client public key / certificate
+openssl x509 -req -in "${TLS_DIR}/client.csr" -CA "${TLS_DIR}/ca.crt" -CAkey "${TLS_DIR}/ca.key" -CAcreateserial -out "${TLS_DIR}/client.crt" -days 360 -addtrust clientAuth
