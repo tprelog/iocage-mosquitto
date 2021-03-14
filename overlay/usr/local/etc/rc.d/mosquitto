@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# PROVIDE: mosquitto
+# REQUIRE: DAEMON
+# BEFORE: LOGIN
+# KEYWORD: shutdown
+
+#
+# Add the following lines to /etc/rc.conf to enable mosquitto:
+#
+# mosquitto_enable="YES"
+# mosquitto_flags="<set as needed>"
+#
+# See mosquitto(8) for flags
+#
+
+# shellcheck disable=SC1091,2034
+name=mosquitto
+rcvar=mosquitto_enable
+
+. /etc/rc.subr && load_rc_config ${name}
+
+: "${mosquitto_enable:=NO}"
+: "${mosquitto_config:=/usr/local/etc/mosquitto/mosquitto.conf}"
+
+if [ -z "${mosquitto_user:=$(grep ^user ${mosquitto_config} | awk '{print($2)}')}" ]; then
+  mosquitto_user=nobody
+fi
+
+command=/usr/local/sbin/mosquitto
+command_args="-c ${mosquitto_config} -d"
+extra_commands='reload'
+
+required_files="${mosquitto_config}"
+
+pidfile="$(grep pid_file "${mosquitto_config}" | awk '{print($2)}')"
+
+start_precmd=${name}_precmd
+mosquitto_precmd() {
+  install -m 644 -o "${mosquitto_user}" -- /dev/null "${pidfile}"
+}
+
+stop_postcmd=${name}_postcmd
+mosquitto_postcmd() {
+  rm -f -- "${pidfile}"
+}
+
+run_rc_command "${1}"

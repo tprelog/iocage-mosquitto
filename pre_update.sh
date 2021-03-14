@@ -1,12 +1,20 @@
 #!/bin/sh
 
-_DBPATH="/var/db/mosquitto"
+# shellcheck disable=SC1091,2154
+. /etc/rc.subr && load_rc_config mosquitto
 
-# Create a non-root user (mosquitto) to run the broker
-id -u mosquitto  > /dev/null 2>&1 \
-|| pw adduser -u 1883 -n mosquitto -w no -d /nonexistent
+CONFIG="${mosquitto_config:-/usr/local/etc/mosquitto/mosquitto.conf}"
+DBPATH="$(grep ^persistence_location "${CONFIG}" | awk '{print($2)}')"
+USER="$(grep ^user "${CONFIG}" | awk '{print($2)}')"
 
-# Create a directory for mosquitto.db (used when persistence is set to true)
-if [ ! -d "${_DBPATH}" ]; then
-  install -d -g mosquitto -o mosquitto -m 755 -- ${_DBPATH}
+# https://mosquitto.org/documentation/migrating-to-2-0/
+sed -i '' "s|^port|listener|" "${CONFIG}"
+
+# Create a non-root user to run the broker
+id -u "${USER}" > /dev/null 2>&1 \
+|| pw adduser -u 1883 -n "${USER}" -w no -d /nonexistent
+
+# Install a directory for mosquitto.db
+if [ ! -d "${DBPATH}" ]; then
+  install -d -g "${USER}" -m 755 -o "${USER}" -- "${DBPATH}"
 fi

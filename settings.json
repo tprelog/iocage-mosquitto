@@ -6,7 +6,7 @@
 	{
 		"port": {
 			"type": "int",
-			"name": "MQTT Port",
+			"name": "MQTT Listener - Port",
 			"description": "Port for MQTT connections",
 			"range": "1024-32000",
 			"default": "1883",
@@ -23,16 +23,31 @@
 			"type": "add",
 			"name": "Add User",
 			"description": "Add new MQTT user",
-			  "requiredargs": {
-				  "username": {
-						"type": "string",
-						"description": "MQTT Client Username"
-					},
-					"password": {
-						"type": "password",
-						"description": "MQTT Client Password"
-					}
-			  },
+			"requiredargs": {
+				"username": {
+					"type": "string",
+					"description": "MQTT Client Username"
+				},
+				"password": {
+					"type": "password",
+					"description": "MQTT Client Password"
+				}
+			},
+			"requirerestart": true
+		},
+		"setpassword": {
+			"name": "Set user password",
+			"description": "Set or change an MQTT user password",
+			"requiredargs": {
+				"username": {
+					"type": "string",
+					"description": "MQTT Client Username"
+				},
+				"password": {
+					"type": "password",
+					"description": "MQTT Client Password"
+				}
+			},
 			"requirerestart": true
 		},
 		"deluser": {

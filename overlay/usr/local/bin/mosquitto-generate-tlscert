@@ -20,7 +20,7 @@ openssl genrsa -out "${TLS_DIR}/ca.key" 2048
 # create a CA public key / certificate
 openssl req -new -x509 -days 1826 -key "${TLS_DIR}/ca.key" -out "${TLS_DIR}/ca.crt" -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
 
-# Apparently subj must vary by atleast 1 character
+# Apparently subj must vary by at least 1 character
 OU="mosquitto-server"
 
 # create a server private key
@@ -30,10 +30,10 @@ openssl req -new -out "${TLS_DIR}/server.csr" -key "${TLS_DIR}/server.key" -subj
 # create a server public key / certificate
 openssl x509 -req -in "${TLS_DIR}/server.csr" -CA "${TLS_DIR}/ca.crt" -CAkey "${TLS_DIR}/ca.key" -CAcreateserial -out "${TLS_DIR}/server.crt" -days 360
 
-# Apparently subj must vary by atleast 1 character
+# Apparently subj must vary by at least 1 character
 OU="mosquitto-client"
 
-# creata a client private key
+# create a client private key
 openssl genrsa -out "${TLS_DIR}/client.key" 2048
 # create a client certificate request
 openssl req -new -key "${TLS_DIR}/client.key" -out "${TLS_DIR}/client.csr" -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"

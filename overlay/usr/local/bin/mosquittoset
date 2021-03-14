@@ -1,79 +1,76 @@
 #!/bin/sh
 
-# Set configuration option in _CONFIG
-# Example use: sudo iocage set -P allow_anonymous=false mosquitto
-# Example use: sudo iocage set -P adduser=username,password mosquitto
-# Example use: sudo iocage set -P deluser=username mosquitto
-# Example use: sudo iocage set -P addtls=mqtt.example.com mosquitto
-# Example use: sudo iocage set -P deltls=true mosquitto
+# Set configuration option in CONFIG
+# Example use: sudo iocage set -P allow_anonymous=false $JAIL_NAME
+# Example use: sudo iocage set -P adduser=username,password $JAIL_NAME
+# Example use: sudo iocage set -P setpassword=username,password $JAIL_NAME
+# Example use: sudo iocage set -P deluser=username $JAIL_NAME
+# Example use: sudo iocage set -P addtls=mqtt.example.com $JAIL_NAME
+# Example use: sudo iocage set -P deltls=true $JAIL_NAME
 
+# shellcheck disable=SC1091,2154
+. /etc/rc.subr && load_rc_config mosquitto
 
-_CONFIG="/usr/local/etc/mosquitto/mosquitto.conf"
-_PWFILE="/usr/local/etc/mosquitto/pwfile"
+CONFIG="${mosquitto_config:-/usr/local/etc/mosquitto/mosquitto.conf}"
+PWFILE="$(grep ^password_file "${CONFIG}" | awk '{print($2)}')"
 
-give_message_config()
-{
-if [ $? -eq 0 ] ; then
-    echo "Changing ${_CONFIG}"
-else
-    echo "Error updating ${_CONFIG}">2 ; exit 1
-fi
+give_message() {
+  if [ "${1}" -eq 0 ] ; then
+    echo "Updated: ${2}"
+  else
+    echo "Error updating: ${2}"
+  fi
 }
 
-give_message_pwfile()
-{
-if [ $? -eq 0 ] ; then
-    echo "Changing ${_PWFILE}"
-else
-    echo "Error updating ${_PWFILE}">2 ; exit 1
-fi
+set_tls_comments() {
+  sed -i '' "s|cafile /usr/local/share/certs/ca-root-nss.crt|#cafile /usr/local/share/certs/ca-root-nss.crt|" "${1}"
+  sed -i '' "s|#cafile /usr/local/etc/mosquitto/ca.crt|cafile /usr/local/etc/mosquitto/ca.crt|" "${1}"
+  sed -i '' "s|#keyfile /usr/local/etc/mosquitto/server.key|keyfile /usr/local/etc/mosquitto/server.key|" "${1}"
+  sed -i '' "s|#certfile /usr/local/etc/mosquitto/server.crt|certfile /usr/local/etc/mosquitto/server.crt|" "${1}"
 }
 
-set_tls_comments()
-{
-sed -i '' "s|cafile /usr/local/share/certs/ca-root-nss.crt|#cafile /usr/local/share/certs/ca-root-nss.crt|" $1
-sed -i '' "s|#cafile /usr/local/etc/mosquitto/ca.crt|cafile /usr/local/etc/mosquitto/ca.crt|" $1
-sed -i '' "s|#keyfile /usr/local/etc/mosquitto/server.key|keyfile /usr/local/etc/mosquitto/server.key|" $1
-sed -i '' "s|#certfile /usr/local/etc/mosquitto/server.crt|certfile /usr/local/etc/mosquitto/server.crt|" $1
+unset_tls_comments() {
+  sed -i '' "s|#cafile /usr/local/share/certs/ca-root-nss.crt|cafile /usr/local/share/certs/ca-root-nss.crt|" "${1}"
+  sed -i '' "s|cafile /usr/local/etc/mosquitto/ca.crt|#cafile /usr/local/etc/mosquitto/ca.crt|" "${1}"
+  sed -i '' "s|keyfile /usr/local/etc/mosquitto/server.key|#keyfile /usr/local/etc/mosquitto/server.key|" "${1}"
+  sed -i '' "s|certfile /usr/local/etc/mosquitto/server.crt|#certfile /usr/local/etc/mosquitto/server.crt|" "${1}"
 }
 
-unset_tls_comments()
-{
-sed -i '' "s|#cafile /usr/local/share/certs/ca-root-nss.crt|cafile /usr/local/share/certs/ca-root-nss.crt|" $1
-sed -i '' "s|cafile /usr/local/etc/mosquitto/ca.crt|#cafile /usr/local/etc/mosquitto/ca.crt|" $1
-sed -i '' "s|keyfile /usr/local/etc/mosquitto/server.key|#keyfile /usr/local/etc/mosquitto/server.key|" $1
-sed -i '' "s|certfile /usr/local/etc/mosquitto/server.crt|#certfile /usr/local/etc/mosquitto/server.crt|" $1
-}
-
-case $1 in
-    port) sed -i '' "s/^port.*/port $2/" ${_CONFIG}
-          give_message_config
-          ;;
-    allow_anonymous) sed -i '' "s/^allow_anonymous.*/allow_anonymous $2/" ${_CONFIG}
-          give_message_config
-          ;;
-    adduser) mosquitto_passwd -b ${_PWFILE} $2 $3
-          give_message_pwfile
-          ;;
-    deluser) mosquitto_passwd -D ${_PWFILE} $2
-          give_message_pwfile
-          ;;
-    addtls) mosquitto-generate-tlscert $2
-          set_tls_comments ${_CONFIG}
-          give_message_config
-          ;;
-    deltls) unset_tls_comments ${_CONFIG}
-          rm -f /usr/local/etc/mosquitto/ca.crt
-          rm -f /usr/local/etc/mosquitto/ca.key
-          rm -f /usr/local/etc/mosquitto/ca.srl
-          rm -f /usr/local/etc/mosquitto/client.crt
-          rm -f /usr/local/etc/mosquitto/client.csr
-          rm -f /usr/local/etc/mosquitto/client.key
-          rm -f /usr/local/etc/mosquitto/server.crt
-          rm -f /usr/local/etc/mosquitto/server.csr
-          rm -f /usr/local/etc/mosquitto/server.key
-          give_message_config
-          ;;
-    *) echo "Unknown option">&2 ; exit 1
-          ;;
+case "${1}" in
+  listener|port)
+    sed -i '' "s/^listener.*/listener ${2}/" "${CONFIG}"
+    give_message $? "${CONFIG}"
+    ;;
+  allow_anonymous)
+    sed -i '' "s/^allow_anonymous.*/allow_anonymous ${2}/" "${CONFIG}"
+    give_message  $? "${CONFIG}"
+    ;;
+  adduser|setpassword)
+    mosquitto_passwd -b "${PWFILE}" "${2}" "${3}"
+    give_message $? "${PWFILE}"
+    ;;
+  deluser)
+    mosquitto_passwd -D "${PWFILE}" "${2}"
+    give_message $? "${PWFILE}"
+    ;;
+  addtls)
+    mosquitto-generate-tlscert "${2}"
+    set_tls_comments "${CONFIG}"
+    give_message $? "${CONFIG}"
+    ;;
+  deltls)
+    unset_tls_comments "${CONFIG}"
+    rm -f /usr/local/etc/mosquitto/ca.crt \
+          /usr/local/etc/mosquitto/ca.key \
+          /usr/local/etc/mosquitto/ca.srl \
+          /usr/local/etc/mosquitto/client.crt \
+          /usr/local/etc/mosquitto/client.csr \
+          /usr/local/etc/mosquitto/client.key \
+          /usr/local/etc/mosquitto/server.crt \
+          /usr/local/etc/mosquitto/server.csr \
+          /usr/local/etc/mosquitto/server.key
+    give_message $? "${CONFIG}"
+    ;;
+  *) echo "Unknown option: ${1}"
+    ;;
 esac
